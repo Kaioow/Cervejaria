@@ -1,191 +1,208 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import Sidebar from '../components/Sidebar';
 
 function Relatorio() {
-  const navigate = useNavigate();
-
   const [dadosRelatorio, setDadosRelatorio] = useState([]);
 
   useEffect(() => {
     const clientes =
-      JSON.parse(localStorage.getItem('clientes')) || [];
+      JSON.parse(
+        localStorage.getItem('clientes')
+      ) || [];
 
     const cervejas =
-      JSON.parse(localStorage.getItem('cervejas')) || [];
+      JSON.parse(
+        localStorage.getItem('cervejas')
+      ) || [];
 
     const vendas =
-      JSON.parse(localStorage.getItem('vendas')) || [];
+      JSON.parse(
+        localStorage.getItem('vendas')
+      ) || [];
 
-    const relatorioJoin = vendas.map((venda) => {
-      const cliente = clientes.find(
-        (c) => c.id === venda.clienteId
-      );
+    const relatorioJoin = vendas.map(
+      (venda) => {
+        const cliente = clientes.find(
+          (c) => c.id === venda.clienteId
+        );
 
-      const cerveja = cervejas.find(
-        (c) => c.id === venda.cervejaId
-      );
+        const cerveja = cervejas.find(
+          (c) => c.id === venda.cervejaId
+        );
 
-      return {
-        idVenda: venda.id,
-        clienteNome:
-          cliente?.nome || 'Cliente Removido',
+        return {
+          idVenda: venda.id,
 
-        clienteEmail:
-          cliente?.email || '-',
+          clienteNome:
+            cliente?.nome ||
+            'Cliente Removido',
 
-        cervejaNome:
-          cerveja?.nome || 'Cerveja Removida',
+          clienteEmail:
+            cliente?.email || '-',
 
-        estilo:
-          cerveja?.estilo || '-',
+          cervejaNome:
+            cerveja?.nome ||
+            'Cerveja Removida',
 
-        quantidade: venda.quantidade,
+          estilo:
+            cerveja?.estilo || '-',
 
-        valorTotal: venda.valorTotal,
-      };
-    });
+          quantidade:
+            venda.quantidade,
+
+          valorTotal:
+            venda.valorTotal,
+        };
+      }
+    );
 
     setDadosRelatorio(relatorioJoin);
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('usuarioLogado');
-    navigate('/login');
-  };
+  const totalVendas =
+    dadosRelatorio.length;
 
-  const valorTotalGeral = dadosRelatorio.reduce(
-    (total, venda) =>
-      total + venda.valorTotal,
-    0
-  );
+  const faturamentoTotal =
+    dadosRelatorio.reduce(
+      (total, venda) =>
+        total + venda.valorTotal,
+      0
+    );
 
   return (
-    <div className="page-container">
+    <div className="layout">
 
-      <div className="page-header">
-        <div>
-          <h2>📊 Relatório de Vendas</h2>
-          <p>
-            JOIN entre Clientes,
-            Cervejas e Vendas
-          </p>
-        </div>
+      <Sidebar />
 
-        <div className="page-actions">
+      <div className="content">
 
-          <button
-            className="primary-btn"
-            onClick={() =>
-              navigate('/clientes')
-            }
-          >
-            👥 Clientes
-          </button>
+        <div className="page-container">
 
-          <button
-            className="secondary-btn"
-            onClick={() =>
-              navigate('/vendas')
-            }
-          >
-            💰 Vendas
-          </button>
+          <div className="page-header">
+            <div>
+              <h2>
+                📊 Relatório de Vendas
+              </h2>
 
-          <button
-            className="danger-btn"
-            onClick={handleLogout}
-          >
-            Sair
-          </button>
+              <p>
+                JOIN entre Clientes,
+                Cervejas e Vendas
+              </p>
+            </div>
+          </div>
 
-        </div>
-      </div>
+          <div className="dashboard-cards">
 
-      <div className="dashboard-cards">
+            <div className="dashboard-card">
+              <h3>
+                {totalVendas}
+              </h3>
 
-        <div className="dashboard-card">
-          <h3>{dadosRelatorio.length}</h3>
-          <p>Total de Vendas</p>
-        </div>
+              <p>
+                Total de Vendas
+              </p>
+            </div>
 
-        <div className="dashboard-card">
-          <h3>
-            R$ {valorTotalGeral.toFixed(2)}
-          </h3>
-          <p>Faturamento</p>
-        </div>
+            <div className="dashboard-card">
+              <h3>
+                R$ {faturamentoTotal.toFixed(2)}
+              </h3>
 
-      </div>
+              <p>
+                Faturamento Total
+              </p>
+            </div>
 
-      <div className="table-container">
+          </div>
 
-        <table>
+          <div className="table-container">
 
-          <thead>
-            <tr>
-              <th>ID Venda</th>
-              <th>Cliente</th>
-              <th>Email</th>
-              <th>Cerveja</th>
-              <th>Estilo</th>
-              <th>Qtd</th>
-              <th>Total</th>
-            </tr>
-          </thead>
+            <table>
 
-          <tbody>
-
-            {dadosRelatorio.length === 0 ? (
-              <tr>
-                <td
-                  colSpan="7"
-                  style={{
-                    textAlign: 'center',
-                    padding: '20px',
-                  }}
-                >
-                  Nenhuma venda encontrada.
-                </td>
-              </tr>
-            ) : (
-              dadosRelatorio.map((item) => (
-                <tr key={item.idVenda}>
-
-                  <td>
-                    {item.idVenda}
-                  </td>
-
-                  <td>
-                    {item.clienteNome}
-                  </td>
-
-                  <td>
-                    {item.clienteEmail}
-                  </td>
-
-                  <td>
-                    {item.cervejaNome}
-                  </td>
-
-                  <td>
-                    {item.estilo}
-                  </td>
-
-                  <td>
-                    {item.quantidade}
-                  </td>
-
-                  <td>
-                    R$ {item.valorTotal.toFixed(2)}
-                  </td>
-
+              <thead>
+                <tr>
+                  <th>ID Venda</th>
+                  <th>Cliente</th>
+                  <th>Email</th>
+                  <th>Cerveja</th>
+                  <th>Estilo</th>
+                  <th>Quantidade</th>
+                  <th>Total</th>
                 </tr>
-              ))
-            )}
+              </thead>
 
-          </tbody>
+              <tbody>
 
-        </table>
+                {dadosRelatorio.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan="7"
+                      style={{
+                        textAlign: 'center',
+                        padding: '20px'
+                      }}
+                    >
+                      Nenhuma venda encontrada.
+                    </td>
+                  </tr>
+                ) : (
+                  dadosRelatorio.map(
+                    (item) => (
+                      <tr
+                        key={item.idVenda}
+                      >
+                        <td>
+                          {item.idVenda}
+                        </td>
+
+                        <td>
+                          {
+                            item.clienteNome
+                          }
+                        </td>
+
+                        <td>
+                          {
+                            item.clienteEmail
+                          }
+                        </td>
+
+                        <td>
+                          {
+                            item.cervejaNome
+                          }
+                        </td>
+
+                        <td>
+                          {
+                            item.estilo
+                          }
+                        </td>
+
+                        <td>
+                          {
+                            item.quantidade
+                          }
+                        </td>
+
+                        <td>
+                          R${' '}
+                          {item.valorTotal.toFixed(
+                            2
+                          )}
+                        </td>
+                      </tr>
+                    )
+                  )
+                )}
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
 
       </div>
 

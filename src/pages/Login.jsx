@@ -8,30 +8,38 @@ function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
+
     if (!email || !senha) {
       alert('Por favor, preencha todos os campos!');
       return;
     }
+
     localStorage.setItem('usuarioLogado', 'true');
-    navigate('/cervejas');
+    navigate('/clientes');
   };
 
   return (
     <div className="login-screen-wrapper">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
-        
-        /* Força o componente a ocupar a tela inteira, ignorando travas do Vite */
+
         .login-screen-wrapper {
           position: fixed;
           top: 0;
           left: 0;
           width: 100vw;
           height: 100vh;
-          background-color: #fafafa;
+
+          background: linear-gradient(
+            135deg,
+            #1f2937,
+            #374151
+          );
+
           display: flex;
           justify-content: center;
           align-items: center;
+
           font-family: 'Plus Jakarta Sans', sans-serif;
           color: #171717;
           z-index: 99999;
@@ -40,32 +48,35 @@ function Login() {
 
         .login-card {
           background: #ffffff;
-          border: 1px solid #e5e5e5;
           padding: 40px;
-          border-radius: 12px;
+          border-radius: 16px;
+
           width: 100%;
-          max-width: 360px;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-          text-align: left; /* Garante alinhamento padrão à esquerda */
+          max-width: 420px;
+
+          border-top: 5px solid #d97706;
+
+          box-shadow:
+            0 10px 25px rgba(0,0,0,.15);
+
+          text-align: left;
         }
 
         .brand-logo {
-          font-size: 22px;
+          font-size: 30px;
           font-weight: 700;
           letter-spacing: -0.5px;
-          margin: 0 0 8px 0;
-          color: #0a0a0a;
-        }
-
-        .brand-dot {
-          color: #d97706;
+          margin: 0 0 10px 0;
+          color: #1f2937;
+          text-align: center;
         }
 
         .brand-subtitle {
-          color: #737373;
+          color: #6b7280;
           font-size: 14px;
           margin: 0 0 32px 0;
           line-height: 1.5;
+          text-align: center;
         }
 
         .form-group {
@@ -78,14 +89,14 @@ function Login() {
 
         .form-label {
           font-size: 13px;
-          font-weight: 500;
-          color: #444444;
+          font-weight: 600;
+          color: #374151;
         }
 
         .form-input {
-          padding: 11px 14px;
-          border-radius: 6px;
-          border: 1px solid #e5e5e5;
+          padding: 12px 14px;
+          border-radius: 8px;
+          border: 1px solid #d1d5db;
           background-color: #ffffff;
           color: #171717;
           font-size: 14px;
@@ -93,94 +104,100 @@ function Login() {
           outline: none;
           box-sizing: border-box;
           width: 100%;
-          transition: all 0.15s ease;
+          transition: all 0.2s ease;
         }
 
         .form-input:focus {
-          border-color: #171717;
-          box-shadow: 0 0 0 3px rgba(23, 23, 23, 0.08);
+          border-color: #d97706;
+          box-shadow: 0 0 0 3px rgba(217,119,6,.15);
         }
 
         .form-input::placeholder {
-          color: #a3a3a3;
+          color: #9ca3af;
         }
 
         .submit-btn {
           width: 100%;
           padding: 12px;
-          border-radius: 6px;
+          border-radius: 8px;
           border: none;
-          background-color: #171717;
+
+          background-color: #d97706;
           color: #ffffff;
+
           font-size: 14px;
           font-weight: 600;
           font-family: inherit;
+
           cursor: pointer;
-          transition: background-color 0.15s ease;
+          transition: all .2s ease;
+
           margin-top: 8px;
         }
 
         .submit-btn:hover {
-          background-color: #262626;
+          background-color: #b45309;
         }
 
         .footer-text {
-          text-align: left;
-          margin: 32px 0 0 0;
-          font-size: 11px;
-          color: #a3a3a3;
-          display: flex;
-          align-items: center;
-          gap: 6px;
-        }
-
-        .status-dot {
-          width: 6px;
-          height: 6px;
-          background-color: #10b981;
-          border-radius: 50%;
+          text-align: center;
+          margin: 25px 0 0 0;
+          font-size: 12px;
+          color: #9ca3af;
         }
       `}</style>
 
       <div className="login-card">
+
         <h2 className="brand-logo">
-          BrewTech<span className="brand-dot">.</span>
+          🍺 BeerManager
         </h2>
+
         <p className="brand-subtitle">
-          Gerenciamento de produção e fluxo de vendas.
+          Sistema de Gestão para Cervejarias
         </p>
 
         <form onSubmit={handleLogin}>
           <div className="form-group">
-            <label className="form-label">E-mail corporativo</label>
-            <input 
-              type="email" 
+            <label className="form-label">
+              E-mail
+            </label>
+
+            <input
+              type="email"
               className="form-input"
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
-              placeholder="nome@brewtech.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="usuario@email.com"
             />
           </div>
-          
+
           <div className="form-group">
-            <label className="form-label">Senha de acesso</label>
-            <input 
-              type="password" 
+            <label className="form-label">
+              Senha
+            </label>
+
+            <input
+              type="password"
               className="form-input"
-              value={senha} 
-              onChange={(e) => setSenha(e.target.value)} 
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
               placeholder="••••••••"
             />
           </div>
-          
-          <button type="submit" className="submit-btn">
-            Entrar no painel
+
+          <button
+            type="submit"
+            className="submit-btn"
+          >
+            Entrar no Sistema
           </button>
         </form>
-        
+
         <p className="footer-text">
-          <span className="status-dot"></span> Todos os sistemas operacionais
+          BeerManager v1.0 • Projeto Acadêmico
         </p>
+
       </div>
     </div>
   );

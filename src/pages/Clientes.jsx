@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import ClienteItem from '../components/ClienteItem';
+import Sidebar from '../components/Sidebar';
 
 function Clientes() {
-  const navigate = useNavigate();
-
   const [clientes, setClientes] = useState(() => {
     const dados = localStorage.getItem('clientes');
     return dados ? JSON.parse(dados) : [];
@@ -21,11 +19,6 @@ function Clientes() {
       JSON.stringify(clientes)
     );
   }, [clientes]);
-
-  const handleLogout = () => {
-    localStorage.removeItem('usuarioLogado');
-    navigate('/login');
-  };
 
   const salvarCliente = (e) => {
     e.preventDefault();
@@ -48,7 +41,6 @@ function Clientes() {
       );
 
       setClientes(atualizados);
-      setEditandoId(null);
     } else {
       const novoCliente = {
         id: Date.now(),
@@ -78,7 +70,11 @@ function Clientes() {
   };
 
   const excluirCliente = (id) => {
-    if (!window.confirm('Deseja excluir este cliente?')) {
+    if (
+      !window.confirm(
+        'Deseja excluir este cliente?'
+      )
+    ) {
       return;
     }
 
@@ -90,120 +86,111 @@ function Clientes() {
   };
 
   return (
-    <div className="page-container">
+    <div className="layout">
 
-      <div className="page-header">
-        <div>
-          <h2>👥 Gestão de Clientes</h2>
-          <p>
-            Cadastro e gerenciamento de clientes
-          </p>
-        </div>
+      <Sidebar />
 
-        <div className="page-actions">
-          <button
-            className="primary-btn"
-            onClick={() => navigate('/cervejas')}
-          >
-            🍻 Cervejas
-          </button>
+      <div className="content">
 
-          <button
-            className="secondary-btn"
-            onClick={() => navigate('/vendas')}
-          >
-            💰 Vendas
-          </button>
+        <div className="page-container">
 
-          <button
-            className="danger-btn"
-            onClick={handleLogout}
-          >
-            Sair
-          </button>
-        </div>
-      </div>
+          <div className="page-header">
+            <div>
+              <h2>👥 Gestão de Clientes</h2>
+              <p>
+                Cadastro e gerenciamento de clientes
+              </p>
+            </div>
+          </div>
 
-      <div className="dashboard-cards">
-        <div className="dashboard-card">
-          <h3>{clientes.length}</h3>
-          <p>Clientes cadastrados</p>
-        </div>
-      </div>
+          <div className="dashboard-cards">
+            <div className="dashboard-card">
+              <h3>{clientes.length}</h3>
+              <p>Clientes cadastrados</p>
+            </div>
+          </div>
 
-      <div className="form-card">
-        <h3>
-          {editandoId
-            ? 'Editar Cliente'
-            : 'Novo Cliente'}
-        </h3>
+          <div className="form-card">
 
-        <form
-          className="form-grid"
-          onSubmit={salvarCliente}
-        >
-          <input
-            type="text"
-            placeholder="Nome do Cliente"
-            value={nome}
-            onChange={(e) =>
-              setNome(e.target.value)
-            }
-          />
+            <h3>
+              {editandoId
+                ? 'Editar Cliente'
+                : 'Novo Cliente'}
+            </h3>
 
-          <input
-            type="email"
-            placeholder="E-mail"
-            value={email}
-            onChange={(e) =>
-              setEmail(e.target.value)
-            }
-          />
-
-          <input
-            type="text"
-            placeholder="Telefone"
-            value={telefone}
-            onChange={(e) =>
-              setTelefone(e.target.value)
-            }
-          />
-
-          <button
-            type="submit"
-            className="success-btn"
-          >
-            {editandoId
-              ? 'Atualizar Cliente'
-              : 'Cadastrar Cliente'}
-          </button>
-        </form>
-      </div>
-
-      <div className="form-card">
-        <h3>Lista de Clientes</h3>
-
-        {clientes.length === 0 ? (
-          <p>
-            Nenhum cliente cadastrado.
-          </p>
-        ) : (
-          <ul
-            style={{
-              listStyle: 'none',
-              padding: 0,
-            }}
-          >
-            {clientes.map((cliente) => (
-              <ClienteItem
-                key={cliente.id}
-                cliente={cliente}
-                aoEditar={editarCliente}
-                aoExcluir={excluirCliente}
+            <form
+              className="form-grid"
+              onSubmit={salvarCliente}
+            >
+              <input
+                type="text"
+                placeholder="Nome do Cliente"
+                value={nome}
+                onChange={(e) =>
+                  setNome(e.target.value)
+                }
               />
-            ))}
-          </ul>
-        )}
+
+              <input
+                type="email"
+                placeholder="E-mail"
+                value={email}
+                onChange={(e) =>
+                  setEmail(e.target.value)
+                }
+              />
+
+              <input
+                type="text"
+                placeholder="Telefone"
+                value={telefone}
+                onChange={(e) =>
+                  setTelefone(e.target.value)
+                }
+              />
+
+              <button
+                type="submit"
+                className="success-btn"
+              >
+                {editandoId
+                  ? 'Atualizar Cliente'
+                  : 'Cadastrar Cliente'}
+              </button>
+            </form>
+
+          </div>
+
+          <div className="form-card">
+
+            <h3>Lista de Clientes</h3>
+
+            {clientes.length === 0 ? (
+              <p>
+                Nenhum cliente cadastrado.
+              </p>
+            ) : (
+              <ul
+                style={{
+                  listStyle: 'none',
+                  padding: 0,
+                }}
+              >
+                {clientes.map((cliente) => (
+                  <ClienteItem
+                    key={cliente.id}
+                    cliente={cliente}
+                    aoEditar={editarCliente}
+                    aoExcluir={excluirCliente}
+                  />
+                ))}
+              </ul>
+            )}
+
+          </div>
+
+        </div>
+
       </div>
 
     </div>

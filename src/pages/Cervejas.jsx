@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import Sidebar from '../components/Sidebar';
 
 function Cervejas() {
-  const navigate = useNavigate();
-
   const [cervejas, setCervejas] = useState(() => {
     const dados = localStorage.getItem('cervejas');
     return dados ? JSON.parse(dados) : [];
@@ -19,11 +17,6 @@ function Cervejas() {
       JSON.stringify(cervejas)
     );
   }, [cervejas]);
-
-  const handleLogout = () => {
-    localStorage.removeItem('usuarioLogado');
-    navigate('/login');
-  };
 
   const salvarCerveja = (e) => {
     e.preventDefault();
@@ -48,7 +41,6 @@ function Cervejas() {
       );
 
       setCervejas(atualizadas);
-      setEditandoId(null);
     } else {
       const novaCerveja = {
         id: Date.now(),
@@ -94,153 +86,140 @@ function Cervejas() {
   };
 
   return (
-    <div className="page-container">
+    <div className="layout">
 
-      <div className="page-header">
-        <div>
-          <h2>🍻 Gestão de Cervejas</h2>
-          <p>
-            Cadastro e gerenciamento de
-            cervejas
-          </p>
-        </div>
+      <Sidebar />
 
-        <div className="page-actions">
-          <button
-            className="primary-btn"
-            onClick={() =>
-              navigate('/clientes')
-            }
-          >
-            👥 Clientes
-          </button>
+      <div className="content">
 
-          <button
-            className="secondary-btn"
-            onClick={() =>
-              navigate('/vendas')
-            }
-          >
-            💰 Vendas
-          </button>
+        <div className="page-container">
 
-          <button
-            className="danger-btn"
-            onClick={handleLogout}
-          >
-            Sair
-          </button>
-        </div>
-      </div>
+          <div className="page-header">
+            <div>
+              <h2>🍻 Gestão de Cervejas</h2>
+              <p>
+                Cadastro e gerenciamento de cervejas
+              </p>
+            </div>
+          </div>
 
-      <div className="dashboard-cards">
-        <div className="dashboard-card">
-          <h3>{cervejas.length}</h3>
-          <p>Cervejas cadastradas</p>
-        </div>
-      </div>
+          <div className="dashboard-cards">
+            <div className="dashboard-card">
+              <h3>{cervejas.length}</h3>
+              <p>Cervejas cadastradas</p>
+            </div>
+          </div>
 
-      <div className="form-card">
-        <h3>
-          {editandoId
-            ? 'Editar Cerveja'
-            : 'Nova Cerveja'}
-        </h3>
+          <div className="form-card">
 
-        <form
-          className="form-grid"
-          onSubmit={salvarCerveja}
-        >
-          <input
-            type="text"
-            placeholder="Nome da cerveja"
-            value={nome}
-            onChange={(e) =>
-              setNome(e.target.value)
-            }
-          />
+            <h3>
+              {editandoId
+                ? 'Editar Cerveja'
+                : 'Nova Cerveja'}
+            </h3>
 
-          <input
-            type="text"
-            placeholder="Estilo (IPA, Pilsen, Stout...)"
-            value={estilo}
-            onChange={(e) =>
-              setEstilo(e.target.value)
-            }
-          />
+            <form
+              className="form-grid"
+              onSubmit={salvarCerveja}
+            >
+              <input
+                type="text"
+                placeholder="Nome da cerveja"
+                value={nome}
+                onChange={(e) =>
+                  setNome(e.target.value)
+                }
+              />
 
-          <button
-            type="submit"
-            className="success-btn"
-          >
-            {editandoId
-              ? 'Atualizar Cerveja'
-              : 'Cadastrar Cerveja'}
-          </button>
-        </form>
-      </div>
+              <input
+                type="text"
+                placeholder="Estilo (IPA, Pilsen, Stout...)"
+                value={estilo}
+                onChange={(e) =>
+                  setEstilo(e.target.value)
+                }
+              />
 
-      <div className="form-card">
-        <h3>Lista de Cervejas</h3>
+              <button
+                type="submit"
+                className="success-btn"
+              >
+                {editandoId
+                  ? 'Atualizar Cerveja'
+                  : 'Cadastrar Cerveja'}
+              </button>
+            </form>
 
-        {cervejas.length === 0 ? (
-          <p>
-            Nenhuma cerveja cadastrada.
-          </p>
-        ) : (
-          <ul
-            style={{
-              listStyle: 'none',
-              padding: 0,
-            }}
-          >
-            {cervejas.map(
-              (cerveja) => (
-                <li
-                  key={cerveja.id}
-                  className="list-card"
-                >
-                  <div>
-                    <strong>
-                      {cerveja.nome}
-                    </strong>
+          </div>
 
-                    <br />
+          <div className="form-card">
 
-                    <small>
-                      Estilo:{' '}
-                      {cerveja.estilo}
-                    </small>
-                  </div>
+            <h3>Lista de Cervejas</h3>
 
-                  <div className="actions">
-                    <button
-                      className="primary-btn"
-                      onClick={() =>
-                        editarCerveja(
-                          cerveja
-                        )
-                      }
+            {cervejas.length === 0 ? (
+              <p>
+                Nenhuma cerveja cadastrada.
+              </p>
+            ) : (
+              <ul
+                style={{
+                  listStyle: 'none',
+                  padding: 0,
+                }}
+              >
+                {cervejas.map(
+                  (cerveja) => (
+                    <li
+                      key={cerveja.id}
+                      className="list-card"
                     >
-                      ✏️ Editar
-                    </button>
+                      <div>
+                        <strong>
+                          {cerveja.nome}
+                        </strong>
 
-                    <button
-                      className="danger-btn"
-                      onClick={() =>
-                        excluirCerveja(
-                          cerveja.id
-                        )
-                      }
-                    >
-                      🗑️ Excluir
-                    </button>
-                  </div>
-                </li>
-              )
+                        <br />
+
+                        <small>
+                          Estilo: {cerveja.estilo}
+                        </small>
+                      </div>
+
+                      <div className="actions">
+
+                        <button
+                          className="primary-btn"
+                          onClick={() =>
+                            editarCerveja(
+                              cerveja
+                            )
+                          }
+                        >
+                          ✏️ Editar
+                        </button>
+
+                        <button
+                          className="danger-btn"
+                          onClick={() =>
+                            excluirCerveja(
+                              cerveja.id
+                            )
+                          }
+                        >
+                          🗑️ Excluir
+                        </button>
+
+                      </div>
+                    </li>
+                  )
+                )}
+              </ul>
             )}
-          </ul>
-        )}
+
+          </div>
+
+        </div>
+
       </div>
 
     </div>
