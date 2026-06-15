@@ -1,15 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ClienteItem from '../components/ClienteItem';
 
 function Clientes() {
   const navigate = useNavigate();
-  
-  const [clientes, setClientes] = useState([]);
+
+  const [clientes, setClientes] = useState(() => {
+    const dados = localStorage.getItem('clientes');
+    return dados ? JSON.parse(dados) : [];
+  });
+
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [telefone, setTelefone] = useState('');
   const [editandoId, setEditandoId] = useState(null);
+
+  useEffect(() => {
+    localStorage.setItem(
+      'clientes',
+      JSON.stringify(clientes)
+    );
+  }, [clientes]);
 
   const handleLogout = () => {
     localStorage.removeItem('usuarioLogado');
@@ -18,26 +29,45 @@ function Clientes() {
 
   const salvarCliente = (e) => {
     e.preventDefault();
-    
-    if (!nome || !email) {
-      alert('Por favor, preencha pelo menos nome e e-mail!');
+
+    if (!nome.trim() || !email.trim()) {
+      alert('Preencha Nome e E-mail.');
       return;
     }
 
     if (editandoId) {
-      const clientesAtualizados = clientes.map((cliente) => 
-        cliente.id === editandoId ? { ...cliente, nome, email, telefone } : cliente
+      const atualizados = clientes.map((cliente) =>
+        cliente.id === editandoId
+          ? {
+              ...cliente,
+              nome,
+              email,
+              telefone,
+            }
+          : cliente
       );
-      setClientes(clientesAtualizados);
+
+      setClientes(atualizados);
       setEditandoId(null);
     } else {
-      const novoCliente = { id: Date.now(), nome, email, telefone };
+      const novoCliente = {
+        id: Date.now(),
+        nome,
+        email,
+        telefone,
+      };
+
       setClientes([...clientes, novoCliente]);
     }
 
+    limparFormulario();
+  };
+
+  const limparFormulario = () => {
     setNome('');
     setEmail('');
     setTelefone('');
+    setEditandoId(null);
   };
 
   const editarCliente = (cliente) => {
@@ -48,43 +78,134 @@ function Clientes() {
   };
 
   const excluirCliente = (id) => {
-    setClientes(clientes.filter((cliente) => cliente.id !== id));
+    if (!window.confirm('Deseja excluir este cliente?')) {
+      return;
+    }
+
+    const filtrados = clientes.filter(
+      (cliente) => cliente.id !== id
+    );
+
+    setClientes(filtrados);
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2>👥 Gestão de Clientes</h2>
+    <div className="page-container">
+
+      <div className="page-header">
         <div>
-          <button onClick={() => navigate('/cervejas')} style={{ marginRight: '10px', cursor: 'pointer' }}>🍻 Ver Cervejas</button>
-          <button onClick={handleLogout} style={{ padding: '5px 10px', cursor: 'pointer' }}>Sair</button>
+          <h2>👥 Gestão de Clientes</h2>
+          <p>
+            Cadastro e gerenciamento de clientes
+          </p>
+        </div>
+
+        <div className="page-actions">
+          <button
+            className="primary-btn"
+            onClick={() => navigate('/cervejas')}
+          >
+            🍻 Cervejas
+          </button>
+
+          <button
+            className="secondary-btn"
+            onClick={() => navigate('/vendas')}
+          >
+            💰 Vendas
+          </button>
+
+          <button
+            className="danger-btn"
+            onClick={handleLogout}
+          >
+            Sair
+          </button>
         </div>
       </div>
 
-      <form onSubmit={salvarCliente} style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px', marginTop: '20px' }}>
-        <input type="text" placeholder="Nome do Cliente" value={nome} onChange={(e) => setNome(e.target.value)} style={{ padding: '8px' }} />
-        <input type="email" placeholder="E-mail" value={email} onChange={(e) => setEmail(e.target.value)} style={{ padding: '8px' }} />
-        <input type="text" placeholder="Telefone" value={telefone} onChange={(e) => setTelefone(e.target.value)} style={{ padding: '8px' }} />
-        <button type="submit" style={{ padding: '8px', cursor: 'pointer' }}>
-          {editandoId ? 'Atualizar Cliente' : 'Cadastrar Cliente'}
-        </button>
-      </form>
+      <div className="dashboard-cards">
+        <div className="dashboard-card">
+          <h3>{clientes.length}</h3>
+          <p>Clientes cadastrados</p>
+        </div>
+      </div>
 
-      <h3>Lista de Clientes</h3>
-      {clientes.length === 0 ? (
-        <p>Nenhum cliente cadastrado.</p>
-      ) : (
-        <ul style={{ listStyle: 'none', padding: 0 }}>
-          {clientes.map((cliente) => (
-            <ClienteItem 
-              key={cliente.id} 
-              cliente={cliente} 
-              aoEditar={editarCliente} 
-              aoExcluir={excluirCliente} 
-            />
-          ))}
-        </ul>
-      )}
+      <div className="form-card">
+        <h3>
+          {editandoId
+            ? 'Editar Cliente'
+            : 'Novo Cliente'}
+        </h3>
+
+        <form
+          className="form-grid"
+          onSubmit={salvarCliente}
+        >
+          <input
+            type="text"
+            placeholder="Nome do Cliente"
+            value={nome}
+            onChange={(e) =>
+              setNome(e.target.value)
+            }
+          />
+
+          <input
+            type="email"
+            placeholder="E-mail"
+            value={email}
+            onChange={(e) =>
+              setEmail(e.target.value)
+            }
+          />
+
+          <input
+            type="text"
+            placeholder="Telefone"
+            value={telefone}
+            onChange={(e) =>
+              setTelefone(e.target.value)
+            }
+          />
+
+          <button
+            type="submit"
+            className="success-btn"
+          >
+            {editandoId
+              ? 'Atualizar Cliente'
+              : 'Cadastrar Cliente'}
+          </button>
+        </form>
+      </div>
+
+      <div className="form-card">
+        <h3>Lista de Clientes</h3>
+
+        {clientes.length === 0 ? (
+          <p>
+            Nenhum cliente cadastrado.
+          </p>
+        ) : (
+          <ul
+            style={{
+              listStyle: 'none',
+              padding: 0,
+            }}
+          >
+            {clientes.map((cliente) => (
+              <ClienteItem
+                key={cliente.id}
+                cliente={cliente}
+                aoEditar={editarCliente}
+                aoExcluir={excluirCliente}
+              />
+            ))}
+          </ul>
+        )}
+      </div>
+
     </div>
   );
 }

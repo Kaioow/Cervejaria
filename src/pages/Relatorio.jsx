@@ -3,44 +3,49 @@ import { useNavigate } from 'react-router-dom';
 
 function Relatorio() {
   const navigate = useNavigate();
+
   const [dadosRelatorio, setDadosRelatorio] = useState([]);
 
   useEffect(() => {
-    // 1. Busca as vendas salvas no localStorage (entidade principal)
-    const vendasSalvas = JSON.parse(localStorage.getItem('vendas')) || [];
+    const clientes =
+      JSON.parse(localStorage.getItem('clientes')) || [];
 
-    // 2. Simula o banco de dados de outras entidades (para o JOIN)
-    const bancoClientes = [
-      { id: 1, nome: "João Silva", email: "joao@email.com" },
-      { id: 2, nome: "Maria Oliveira", email: "maria@email.com" },
-      { id: 3, nome: "Carlos Souza", email: "carlos@email.com" }
-    ];
+    const cervejas =
+      JSON.parse(localStorage.getItem('cervejas')) || [];
 
-    const bancoCervejas = [
-      { id: 101, nome: "IPA Suprema", estilo: "IPA" },
-      { id: 102, nome: "Pilsen Leve", estilo: "Pilsen" },
-      { id: 103, nome: "Stout Escura", estilo: "Stout" }
-    ];
+    const vendas =
+      JSON.parse(localStorage.getItem('vendas')) || [];
 
-    // 3. Realizando o JOIN com map() e find()
-    const relatorioComJoin = vendasSalvas.map((venda) => {
-      // Procura o cliente pelo ID (Chave Estrangeira)
-      const clienteEncontrado = bancoClientes.find(c => c.id === venda.clienteId) || { nome: "Cliente Não Encontrado" };
-      
-      // Procura a cerveja pelo ID (Chave Estrangeira)
-      const cervejaEncontrada = bancoCervejas.find(c => c.id === venda.cervejaId) || { nome: "Cerveja Não Encontrada" };
+    const relatorioJoin = vendas.map((venda) => {
+      const cliente = clientes.find(
+        (c) => c.id === venda.clienteId
+      );
 
-      // Retorna a venda mesclada com os dados reais
+      const cerveja = cervejas.find(
+        (c) => c.id === venda.cervejaId
+      );
+
       return {
         idVenda: venda.id,
-        clienteNome: clienteEncontrado.nome,
-        cervejaNome: cervejaEncontrada.nome,
+        clienteNome:
+          cliente?.nome || 'Cliente Removido',
+
+        clienteEmail:
+          cliente?.email || '-',
+
+        cervejaNome:
+          cerveja?.nome || 'Cerveja Removida',
+
+        estilo:
+          cerveja?.estilo || '-',
+
         quantidade: venda.quantidade,
-        valorTotal: venda.valorTotal
+
+        valorTotal: venda.valorTotal,
       };
     });
 
-    setDadosRelatorio(relatorioComJoin);
+    setDadosRelatorio(relatorioJoin);
   }, []);
 
   const handleLogout = () => {
@@ -48,47 +53,142 @@ function Relatorio() {
     navigate('/login');
   };
 
+  const valorTotalGeral = dadosRelatorio.reduce(
+    (total, venda) =>
+      total + venda.valorTotal,
+    0
+  );
+
   return (
-    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2>📊 Relatório de Vendas (JOIN)</h2>
+    <div className="page-container">
+
+      <div className="page-header">
         <div>
-          <button onClick={() => navigate('/vendas')} style={{ marginRight: '10px', cursor: 'pointer' }}>💰 Ver Vendas</button>
-          <button onClick={handleLogout} style={{ padding: '5px 10px', cursor: 'pointer' }}>Sair</button>
+          <h2>📊 Relatório de Vendas</h2>
+          <p>
+            JOIN entre Clientes,
+            Cervejas e Vendas
+          </p>
+        </div>
+
+        <div className="page-actions">
+
+          <button
+            className="primary-btn"
+            onClick={() =>
+              navigate('/clientes')
+            }
+          >
+            👥 Clientes
+          </button>
+
+          <button
+            className="secondary-btn"
+            onClick={() =>
+              navigate('/vendas')
+            }
+          >
+            💰 Vendas
+          </button>
+
+          <button
+            className="danger-btn"
+            onClick={handleLogout}
+          >
+            Sair
+          </button>
+
         </div>
       </div>
 
-      <p>Simulação de JOIN entre Vendas, Clientes e Cervejas.</p>
+      <div className="dashboard-cards">
 
-      {/* Exibição clara do relatório */}
-      <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
-        <thead>
-          <tr style={{ backgroundColor: '#f4f4f4', textAlign: 'left' }}>
-            <th style={{ padding: '10px', borderBottom: '1px solid #ccc' }}>ID Venda</th>
-            <th style={{ padding: '10px', borderBottom: '1px solid #ccc' }}>Cliente</th>
-            <th style={{ padding: '10px', borderBottom: '1px solid #ccc' }}>Cerveja</th>
-            <th style={{ padding: '10px', borderBottom: '1px solid #ccc' }}>Qtd</th>
-            <th style={{ padding: '10px', borderBottom: '1px solid #ccc' }}>Total (R$)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {dadosRelatorio.length === 0 ? (
+        <div className="dashboard-card">
+          <h3>{dadosRelatorio.length}</h3>
+          <p>Total de Vendas</p>
+        </div>
+
+        <div className="dashboard-card">
+          <h3>
+            R$ {valorTotalGeral.toFixed(2)}
+          </h3>
+          <p>Faturamento</p>
+        </div>
+
+      </div>
+
+      <div className="table-container">
+
+        <table>
+
+          <thead>
             <tr>
-              <td colSpan="5" style={{ padding: '10px', textAlign: 'center' }}>Nenhuma venda encontrada para o relatório.</td>
+              <th>ID Venda</th>
+              <th>Cliente</th>
+              <th>Email</th>
+              <th>Cerveja</th>
+              <th>Estilo</th>
+              <th>Qtd</th>
+              <th>Total</th>
             </tr>
-          ) : (
-            dadosRelatorio.map((linha) => (
-              <tr key={linha.idVenda}>
-                <td style={{ padding: '10px', borderBottom: '1px solid #eee' }}>{linha.idVenda}</td>
-                <td style={{ padding: '10px', borderBottom: '1px solid #eee' }}><strong>{linha.clienteNome}</strong></td>
-                <td style={{ padding: '10px', borderBottom: '1px solid #eee' }}>{linha.cervejaNome}</td>
-                <td style={{ padding: '10px', borderBottom: '1px solid #eee' }}>{linha.quantidade}</td>
-                <td style={{ padding: '10px', borderBottom: '1px solid #eee' }}>{linha.valorTotal.toFixed(2)}</td>
+          </thead>
+
+          <tbody>
+
+            {dadosRelatorio.length === 0 ? (
+              <tr>
+                <td
+                  colSpan="7"
+                  style={{
+                    textAlign: 'center',
+                    padding: '20px',
+                  }}
+                >
+                  Nenhuma venda encontrada.
+                </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              dadosRelatorio.map((item) => (
+                <tr key={item.idVenda}>
+
+                  <td>
+                    {item.idVenda}
+                  </td>
+
+                  <td>
+                    {item.clienteNome}
+                  </td>
+
+                  <td>
+                    {item.clienteEmail}
+                  </td>
+
+                  <td>
+                    {item.cervejaNome}
+                  </td>
+
+                  <td>
+                    {item.estilo}
+                  </td>
+
+                  <td>
+                    {item.quantidade}
+                  </td>
+
+                  <td>
+                    R$ {item.valorTotal.toFixed(2)}
+                  </td>
+
+                </tr>
+              ))
+            )}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
     </div>
   );
 }

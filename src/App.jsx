@@ -1,28 +1,94 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import './App.css';
+
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate
+} from 'react-router-dom';
+
 import Login from './pages/Login';
-import Cervejas from './pages/Cervejas';
 import Clientes from './pages/Clientes';
+import Cervejas from './pages/Cervejas';
 import Vendas from './pages/Vendas';
-import Relatorio from './pages/Relatorio'; // <-- Importação do relatório
+import Relatorio from './pages/Relatorio';
 
 function RotaProtegida({ children }) {
-  const logado = localStorage.getItem('usuarioLogado');
-  return logado ? children : <Navigate to="/login" />;
+  const usuarioLogado =
+    localStorage.getItem('usuarioLogado');
+
+  return usuarioLogado
+    ? children
+    : <Navigate to="/login" replace />;
 }
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/login" element={<Login />} />
-        
-        <Route path="/cervejas" element={<RotaProtegida><Cervejas /></RotaProtegida>} />
-        <Route path="/clientes" element={<RotaProtegida><Clientes /></RotaProtegida>} />
-        <Route path="/vendas" element={<RotaProtegida><Vendas /></RotaProtegida>} />
-        
-        {/* Nova rota protegida para o Relatório */}
-        <Route path="/relatorio" element={<RotaProtegida><Relatorio /></RotaProtegida>} />
+
+        {/* Redirecionamento inicial */}
+        <Route
+          path="/"
+          element={
+            localStorage.getItem('usuarioLogado')
+              ? <Navigate to="/clientes" replace />
+              : <Navigate to="/login" replace />
+          }
+        />
+
+        {/* Login */}
+        <Route
+          path="/login"
+          element={<Login />}
+        />
+
+        {/* CRUD Clientes */}
+        <Route
+          path="/clientes"
+          element={
+            <RotaProtegida>
+              <Clientes />
+            </RotaProtegida>
+          }
+        />
+
+        {/* CRUD Cervejas */}
+        <Route
+          path="/cervejas"
+          element={
+            <RotaProtegida>
+              <Cervejas />
+            </RotaProtegida>
+          }
+        />
+
+        {/* CRUD Vendas */}
+        <Route
+          path="/vendas"
+          element={
+            <RotaProtegida>
+              <Vendas />
+            </RotaProtegida>
+          }
+        />
+
+        {/* Relatório JOIN */}
+        <Route
+          path="/relatorio"
+          element={
+            <RotaProtegida>
+              <Relatorio />
+            </RotaProtegida>
+          }
+        />
+
+        {/* Rota inválida */}
+        <Route
+          path="*"
+          element={<Navigate to="/" replace />}
+        />
+
       </Routes>
     </BrowserRouter>
   );

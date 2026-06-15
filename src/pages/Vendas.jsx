@@ -4,64 +4,91 @@ import { useNavigate } from 'react-router-dom';
 function Vendas() {
   const navigate = useNavigate();
 
-  // Estado que inicia buscando dados do localStorage (Exigência de Persistência)
   const [vendas, setVendas] = useState(() => {
-    const dadosSalvos = localStorage.getItem('vendas');
-    return dadosSalvos ? JSON.parse(dadosSalvos) : [];
+    const dados = localStorage.getItem('vendas');
+    return dados ? JSON.parse(dados) : [];
   });
 
-  // Estados do formulário
+  const [clientes, setClientes] = useState([]);
+  const [cervejas, setCervejas] = useState([]);
+
   const [clienteId, setClienteId] = useState('');
   const [cervejaId, setCervejaId] = useState('');
   const [quantidade, setQuantidade] = useState('');
   const [valorTotal, setValorTotal] = useState('');
   const [editandoId, setEditandoId] = useState(null);
 
-  // Efeito para salvar no localStorage automaticamente sempre que a lista mudar
   useEffect(() => {
-    localStorage.setItem('vendas', JSON.stringify(vendas));
+    localStorage.setItem(
+      'vendas',
+      JSON.stringify(vendas)
+    );
   }, [vendas]);
+
+  useEffect(() => {
+    const clientesSalvos =
+      JSON.parse(localStorage.getItem('clientes')) || [];
+
+    const cervejasSalvas =
+      JSON.parse(localStorage.getItem('cervejas')) || [];
+
+    setClientes(clientesSalvos);
+    setCervejas(cervejasSalvas);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('usuarioLogado');
     navigate('/login');
   };
 
-  const salvarVenda = (e) => {
-    e.preventDefault();
-
-    // Validação de campos (useState)
-    if (!clienteId || !cervejaId || !quantidade || !valorTotal) {
-      alert('Por favor, preencha todos os campos da venda!');
-      return;
-    }
-
-    if (editandoId) {
-      // Lógica de UPDATE
-      const novasVendas = vendas.map((venda) =>
-        venda.id === editandoId 
-          ? { ...venda, clienteId: Number(clienteId), cervejaId: Number(cervejaId), quantidade: Number(quantidade), valorTotal: Number(valorTotal) } 
-          : venda
-      );
-      setVendas(novasVendas);
-      setEditandoId(null);
-    } else {
-      // Lógica de CREATE (Usando chave estrangeira simulada por ID)
-      const novaVenda = {
-        id: Date.now(),
-        clienteId: Number(clienteId), // Relacionará com o Cliente
-        cervejaId: Number(cervejaId), // Relacionará com a Cerveja
-        quantidade: Number(quantidade),
-        valorTotal: Number(valorTotal)
-      };
-      setVendas([...vendas, novaVenda]);
-    }
-
-    // Limpar campos
+  const limparFormulario = () => {
     setClienteId('');
     setCervejaId('');
     setQuantidade('');
     setValorTotal('');
+    setEditandoId(null);
+  };
+
+  const salvarVenda = (e) => {
+    e.preventDefault();
+
+    if (
+      !clienteId ||
+      !cervejaId ||
+      !quantidade ||
+      !valorTotal
+    ) {
+      alert('Preencha todos os campos.');
+      return;
+    }
+
+    if (editandoId) {
+      const atualizadas = vendas.map((venda) =>
+        venda.id === editandoId
+          ? {
+              ...venda,
+              clienteId: Number(clienteId),
+              cervejaId: Number(cervejaId),
+              quantidade: Number(quantidade),
+              valorTotal: Number(valorTotal),
+            }
+          : venda
+      );
+
+      setVendas(atualizadas);
+    } else {
+      const novaVenda = {
+        id: Date.now(),
+        clienteId: Number(clienteId),
+        cervejaId: Number(cervejaId),
+        quantidade: Number(quantidade),
+        valorTotal: Number(valorTotal),
+      };
+
+      setVendas([...vendas, novaVenda]);
+    }
+
+    limparFormulario();
   };
 
   const editarVenda = (venda) => {
@@ -73,50 +100,221 @@ function Vendas() {
   };
 
   const excluirVenda = (id) => {
-    setVendas(vendas.filter((venda) => venda.id !== id));
+    if (
+      !window.confirm(
+        'Deseja excluir esta venda?'
+      )
+    ) {
+      return;
+    }
+
+    setVendas(
+      vendas.filter((venda) => venda.id !== id)
+    );
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2>💰 Registro de Vendas</h2>
+    <div className="page-container">
+
+      <div className="page-header">
         <div>
-          <button onClick={() => navigate('/clientes')} style={{ marginRight: '10px', cursor: 'pointer' }}>👥 Ver Clientes</button>
-          <button onClick={handleLogout} style={{ padding: '5px 10px', cursor: 'pointer' }}>Sair</button>
+          <h2>💰 Registro de Vendas</h2>
+          <p>Relacionamento entre Clientes e Cervejas</p>
+        </div>
+
+        <div className="page-actions">
+          <button
+            className="primary-btn"
+            onClick={() => navigate('/clientes')}
+          >
+            👥 Clientes
+          </button>
+
+          <button
+            className="secondary-btn"
+            onClick={() => navigate('/relatorio')}
+          >
+            📊 Relatório
+          </button>
+
+          <button
+            className="danger-btn"
+            onClick={handleLogout}
+          >
+            Sair
+          </button>
         </div>
       </div>
 
-      <form onSubmit={salvarVenda} style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px', marginTop: '20px' }}>
-        <input type="number" placeholder="ID do Cliente (Chave Estrangeira)" value={clienteId} onChange={(e) => setClienteId(e.target.value)} style={{ padding: '8px' }} />
-        <input type="number" placeholder="ID da Cerveja (Chave Estrangeira)" value={cervejaId} onChange={(e) => setCervejaId(e.target.value)} style={{ padding: '8px' }} />
-        <input type="number" placeholder="Quantidade" value={quantidade} onChange={(e) => setQuantidade(e.target.value)} style={{ padding: '8px' }} />
-        <input type="number" step="0.01" placeholder="Valor Total (R$)" value={valorTotal} onChange={(e) => setValorTotal(e.target.value)} style={{ padding: '8px' }} />
-        
-        <button type="submit" style={{ padding: '8px', cursor: 'pointer' }}>
-          {editandoId ? 'Atualizar Venda' : 'Registrar Venda'}
-        </button>
-      </form>
+      <div className="dashboard-cards">
+        <div className="dashboard-card">
+          <h3>{vendas.length}</h3>
+          <p>Vendas Registradas</p>
+        </div>
+      </div>
 
-      <h3>Histórico de Vendas (Salvo no Navegador)</h3>
-      {vendas.length === 0 ? (
-        <p>Nenhuma venda registrada.</p>
-      ) : (
-        <ul style={{ listStyle: 'none', padding: 0 }}>
-          {vendas.map((venda) => (
-            <li key={venda.id} style={{ border: '1px solid #ccc', padding: '10px', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <strong>Venda ID: {venda.id}</strong> <br />
-                <small>Cliente ID: {venda.clienteId} | Cerveja ID: {venda.cervejaId}</small> <br />
-                <small>Qtd: {venda.quantidade} | Total: R$ {venda.valorTotal.toFixed(2)}</small>
-              </div>
-              <div>
-                <button onClick={() => editarVenda(venda)} style={{ marginRight: '5px', cursor: 'pointer' }}>✏️ Editar</button>
-                <button onClick={() => excluirVenda(venda.id)} style={{ cursor: 'pointer' }}>🗑️ Excluir</button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+      <div className="form-card">
+        <h3>
+          {editandoId
+            ? 'Editar Venda'
+            : 'Nova Venda'}
+        </h3>
+
+        <form
+          className="form-grid"
+          onSubmit={salvarVenda}
+        >
+          <select
+            value={clienteId}
+            onChange={(e) =>
+              setClienteId(e.target.value)
+            }
+          >
+            <option value="">
+              Selecione o Cliente
+            </option>
+
+            {clientes.map((cliente) => (
+              <option
+                key={cliente.id}
+                value={cliente.id}
+              >
+                {cliente.nome}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={cervejaId}
+            onChange={(e) =>
+              setCervejaId(e.target.value)
+            }
+          >
+            <option value="">
+              Selecione a Cerveja
+            </option>
+
+            {cervejas.map((cerveja) => (
+              <option
+                key={cerveja.id}
+                value={cerveja.id}
+              >
+                {cerveja.nome}
+              </option>
+            ))}
+          </select>
+
+          <input
+            type="number"
+            placeholder="Quantidade"
+            value={quantidade}
+            onChange={(e) =>
+              setQuantidade(e.target.value)
+            }
+          />
+
+          <input
+            type="number"
+            step="0.01"
+            placeholder="Valor Total"
+            value={valorTotal}
+            onChange={(e) =>
+              setValorTotal(e.target.value)
+            }
+          />
+
+          <button
+            type="submit"
+            className="success-btn"
+          >
+            {editandoId
+              ? 'Atualizar Venda'
+              : 'Registrar Venda'}
+          </button>
+        </form>
+      </div>
+
+      <div className="form-card">
+        <h3>Histórico de Vendas</h3>
+
+        {vendas.length === 0 ? (
+          <p>Nenhuma venda registrada.</p>
+        ) : (
+          <ul
+            style={{
+              listStyle: 'none',
+              padding: 0,
+            }}
+          >
+            {vendas.map((venda) => {
+              const cliente =
+                clientes.find(
+                  (c) => c.id === venda.clienteId
+                );
+
+              const cerveja =
+                cervejas.find(
+                  (c) => c.id === venda.cervejaId
+                );
+
+              return (
+                <li
+                  key={venda.id}
+                  className="list-card"
+                >
+                  <div>
+                    <strong>
+                      {cliente?.nome ||
+                        'Cliente removido'}
+                    </strong>
+
+                    <br />
+
+                    <small>
+                      {cerveja?.nome ||
+                        'Cerveja removida'}
+                    </small>
+
+                    <br />
+
+                    <small>
+                      Quantidade: {venda.quantidade}
+                    </small>
+
+                    <br />
+
+                    <small>
+                      Total: R${' '}
+                      {venda.valorTotal.toFixed(2)}
+                    </small>
+                  </div>
+
+                  <div className="actions">
+                    <button
+                      className="primary-btn"
+                      onClick={() =>
+                        editarVenda(venda)
+                      }
+                    >
+                      ✏️ Editar
+                    </button>
+
+                    <button
+                      className="danger-btn"
+                      onClick={() =>
+                        excluirVenda(venda.id)
+                      }
+                    >
+                      🗑️ Excluir
+                    </button>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+
     </div>
   );
 }

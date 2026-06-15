@@ -1,13 +1,36 @@
 function ClienteItem({ cliente, aoEditar, aoExcluir }) {
   return (
-    <li style={{ border: '1px solid #ccc', padding: '10px', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <li className="list-card">
       <div>
-        <strong>{cliente.nome}</strong> <br />
-        <small>{cliente.email} | {cliente.telefone}</small>
+        <strong>{cliente.nome}</strong>
+
+        <br />
+
+        <small>
+          {cliente.email}
+        </small>
+
+        <br />
+
+        <small>
+          {cliente.telefone || 'Telefone não informado'}
+        </small>
       </div>
-      <div>
-        <button onClick={() => aoEditar(cliente)} style={{ marginRight: '5px', cursor: 'pointer' }}>✏️ Editar</button>
-        <button onClick={() => aoExcluir(cliente.id)} style={{ cursor: 'pointer' }}>🗑️ Excluir</button>
+
+      <div className="actions">
+        <button
+          className="primary-btn"
+          onClick={() => aoEditar(cliente)}
+        >
+          ✏️ Editar
+        </button>
+
+        <button
+          className="danger-btn"
+          onClick={() => aoExcluir(cliente.id)}
+        >
+          🗑️ Excluir
+        </button>
       </div>
     </li>
   );
