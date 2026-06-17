@@ -1,24 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import ClienteItem from '../components/ClienteItem';
 import Sidebar from '../components/Sidebar';
+import { useClientes } from '../hooks/useClientes';
 
 function Clientes() {
-  const [clientes, setClientes] = useState(() => {
-    const dados = localStorage.getItem('clientes');
-    return dados ? JSON.parse(dados) : [];
-  });
+  const {
+    clientes,
+    adicionar,
+    atualizar,
+    remover,
+  } = useClientes();
 
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [telefone, setTelefone] = useState('');
-  const [editandoId, setEditandoId] = useState(null);
+  const [editandoId, setEditandoId] =
+    useState(null);
 
-  useEffect(() => {
-    localStorage.setItem(
-      'clientes',
-      JSON.stringify(clientes)
-    );
-  }, [clientes]);
+  const limparFormulario = () => {
+    setNome('');
+    setEmail('');
+    setTelefone('');
+    setEditandoId(null);
+  };
 
   const salvarCliente = (e) => {
     e.preventDefault();
@@ -29,37 +33,21 @@ function Clientes() {
     }
 
     if (editandoId) {
-      const atualizados = clientes.map((cliente) =>
-        cliente.id === editandoId
-          ? {
-              ...cliente,
-              nome,
-              email,
-              telefone,
-            }
-          : cliente
-      );
-
-      setClientes(atualizados);
-    } else {
-      const novoCliente = {
-        id: Date.now(),
+      atualizar(
+        editandoId,
         nome,
         email,
-        telefone,
-      };
-
-      setClientes([...clientes, novoCliente]);
+        telefone
+      );
+    } else {
+      adicionar(
+        nome,
+        email,
+        telefone
+      );
     }
 
     limparFormulario();
-  };
-
-  const limparFormulario = () => {
-    setNome('');
-    setEmail('');
-    setTelefone('');
-    setEditandoId(null);
   };
 
   const editarCliente = (cliente) => {
@@ -71,18 +59,12 @@ function Clientes() {
 
   const excluirCliente = (id) => {
     if (
-      !window.confirm(
+      window.confirm(
         'Deseja excluir este cliente?'
       )
     ) {
-      return;
+      remover(id);
     }
-
-    const filtrados = clientes.filter(
-      (cliente) => cliente.id !== id
-    );
-
-    setClientes(filtrados);
   };
 
   return (
@@ -96,7 +78,7 @@ function Clientes() {
 
           <div className="page-header">
             <div>
-              <h2>👥 Gestão de Clientes</h2>
+              <h2>  Gestão de Clientes</h2>
               <p>
                 Cadastro e gerenciamento de clientes
               </p>

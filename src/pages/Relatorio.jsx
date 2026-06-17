@@ -1,73 +1,12 @@
-import { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
+import { useRelatorio } from '../hooks/useRelatorio';
 
 function Relatorio() {
-  const [dadosRelatorio, setDadosRelatorio] = useState([]);
-
-  useEffect(() => {
-    const clientes =
-      JSON.parse(
-        localStorage.getItem('clientes')
-      ) || [];
-
-    const cervejas =
-      JSON.parse(
-        localStorage.getItem('cervejas')
-      ) || [];
-
-    const vendas =
-      JSON.parse(
-        localStorage.getItem('vendas')
-      ) || [];
-
-    const relatorioJoin = vendas.map(
-      (venda) => {
-        const cliente = clientes.find(
-          (c) => c.id === venda.clienteId
-        );
-
-        const cerveja = cervejas.find(
-          (c) => c.id === venda.cervejaId
-        );
-
-        return {
-          idVenda: venda.id,
-
-          clienteNome:
-            cliente?.nome ||
-            'Cliente Removido',
-
-          clienteEmail:
-            cliente?.email || '-',
-
-          cervejaNome:
-            cerveja?.nome ||
-            'Cerveja Removida',
-
-          estilo:
-            cerveja?.estilo || '-',
-
-          quantidade:
-            venda.quantidade,
-
-          valorTotal:
-            venda.valorTotal,
-        };
-      }
-    );
-
-    setDadosRelatorio(relatorioJoin);
-  }, []);
-
-  const totalVendas =
-    dadosRelatorio.length;
-
-  const faturamentoTotal =
-    dadosRelatorio.reduce(
-      (total, venda) =>
-        total + venda.valorTotal,
-      0
-    );
+  const {
+    dadosRelatorio,
+    totalVendas,
+    faturamentoTotal,
+  } = useRelatorio();
 
   return (
     <div className="layout">
@@ -139,7 +78,7 @@ function Relatorio() {
                       colSpan="7"
                       style={{
                         textAlign: 'center',
-                        padding: '20px'
+                        padding: '20px',
                       }}
                     >
                       Nenhuma venda encontrada.
@@ -156,33 +95,23 @@ function Relatorio() {
                         </td>
 
                         <td>
-                          {
-                            item.clienteNome
-                          }
+                          {item.clienteNome}
                         </td>
 
                         <td>
-                          {
-                            item.clienteEmail
-                          }
+                          {item.clienteEmail}
                         </td>
 
                         <td>
-                          {
-                            item.cervejaNome
-                          }
+                          {item.cervejaNome}
                         </td>
 
                         <td>
-                          {
-                            item.estilo
-                          }
+                          {item.estilo}
                         </td>
 
                         <td>
-                          {
-                            item.quantidade
-                          }
+                          {item.quantidade}
                         </td>
 
                         <td>

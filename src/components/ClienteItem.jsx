@@ -22,14 +22,14 @@ function ClienteItem({ cliente, aoEditar, aoExcluir }) {
           className="primary-btn"
           onClick={() => aoEditar(cliente)}
         >
-          ✏️ Editar
+            Editar
         </button>
 
         <button
           className="danger-btn"
           onClick={() => aoExcluir(cliente.id)}
         >
-          🗑️ Excluir
+            Excluir
         </button>
       </div>
     </li>

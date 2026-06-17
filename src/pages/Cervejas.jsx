@@ -1,66 +1,40 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Sidebar from '../components/Sidebar';
+import { useCervejas } from '../hooks/useCervejas';
 
 function Cervejas() {
-  const [cervejas, setCervejas] = useState(() => {
-    const dados = localStorage.getItem('cervejas');
-    return dados ? JSON.parse(dados) : [];
-  });
+  const {
+    cervejas,
+    adicionar,
+    atualizar,
+    remover,
+  } = useCervejas();
 
   const [nome, setNome] = useState('');
   const [estilo, setEstilo] = useState('');
   const [editandoId, setEditandoId] = useState(null);
 
-  useEffect(() => {
-    localStorage.setItem(
-      'cervejas',
-      JSON.stringify(cervejas)
-    );
-  }, [cervejas]);
+  const limparFormulario = () => {
+    setNome('');
+    setEstilo('');
+    setEditandoId(null);
+  };
 
   const salvarCerveja = (e) => {
     e.preventDefault();
 
     if (!nome.trim() || !estilo.trim()) {
-      alert(
-        'Informe o nome e o estilo da cerveja.'
-      );
+      alert('Informe o nome e o estilo da cerveja.');
       return;
     }
 
     if (editandoId) {
-      const atualizadas = cervejas.map(
-        (cerveja) =>
-          cerveja.id === editandoId
-            ? {
-                ...cerveja,
-                nome,
-                estilo,
-              }
-            : cerveja
-      );
-
-      setCervejas(atualizadas);
+      atualizar(editandoId, nome, estilo);
     } else {
-      const novaCerveja = {
-        id: Date.now(),
-        nome,
-        estilo,
-      };
-
-      setCervejas([
-        ...cervejas,
-        novaCerveja,
-      ]);
+      adicionar(nome, estilo);
     }
 
     limparFormulario();
-  };
-
-  const limparFormulario = () => {
-    setNome('');
-    setEstilo('');
-    setEditandoId(null);
   };
 
   const editarCerveja = (cerveja) => {
@@ -70,36 +44,22 @@ function Cervejas() {
   };
 
   const excluirCerveja = (id) => {
-    if (
-      !window.confirm(
-        'Deseja excluir esta cerveja?'
-      )
-    ) {
-      return;
+    if (window.confirm('Deseja excluir esta cerveja?')) {
+      remover(id);
     }
-
-    const filtradas = cervejas.filter(
-      (cerveja) => cerveja.id !== id
-    );
-
-    setCervejas(filtradas);
   };
 
   return (
     <div className="layout">
-
       <Sidebar />
 
       <div className="content">
-
         <div className="page-container">
 
           <div className="page-header">
             <div>
               <h2>🍻 Gestão de Cervejas</h2>
-              <p>
-                Cadastro e gerenciamento de cervejas
-              </p>
+              <p>Cadastro e gerenciamento de cervejas</p>
             </div>
           </div>
 
@@ -111,7 +71,6 @@ function Cervejas() {
           </div>
 
           <div className="form-card">
-
             <h3>
               {editandoId
                 ? 'Editar Cerveja'
@@ -149,17 +108,13 @@ function Cervejas() {
                   : 'Cadastrar Cerveja'}
               </button>
             </form>
-
           </div>
 
           <div className="form-card">
-
             <h3>Lista de Cervejas</h3>
 
             {cervejas.length === 0 ? (
-              <p>
-                Nenhuma cerveja cadastrada.
-              </p>
+              <p>Nenhuma cerveja cadastrada.</p>
             ) : (
               <ul
                 style={{
@@ -167,61 +122,52 @@ function Cervejas() {
                   padding: 0,
                 }}
               >
-                {cervejas.map(
-                  (cerveja) => (
-                    <li
-                      key={cerveja.id}
-                      className="list-card"
-                    >
-                      <div>
-                        <strong>
-                          {cerveja.nome}
-                        </strong>
+                {cervejas.map((cerveja) => (
+                  <li
+                    key={cerveja.id}
+                    className="list-card"
+                  >
+                    <div>
+                      <strong>
+                        {cerveja.nome}
+                      </strong>
 
-                        <br />
+                      <br />
 
-                        <small>
-                          Estilo: {cerveja.estilo}
-                        </small>
-                      </div>
+                      <small>
+                        Estilo: {cerveja.estilo}
+                      </small>
+                    </div>
 
-                      <div className="actions">
+                    <div className="actions">
+                      <button
+                        className="primary-btn"
+                        onClick={() =>
+                          editarCerveja(cerveja)
+                        }
+                      >
+                          Editar
+                      </button>
 
-                        <button
-                          className="primary-btn"
-                          onClick={() =>
-                            editarCerveja(
-                              cerveja
-                            )
-                          }
-                        >
-                          ✏️ Editar
-                        </button>
-
-                        <button
-                          className="danger-btn"
-                          onClick={() =>
-                            excluirCerveja(
-                              cerveja.id
-                            )
-                          }
-                        >
-                          🗑️ Excluir
-                        </button>
-
-                      </div>
-                    </li>
-                  )
-                )}
+                      <button
+                        className="danger-btn"
+                        onClick={() =>
+                          excluirCerveja(
+                            cerveja.id
+                          )
+                        }
+                      >
+                          Excluir
+                      </button>
+                    </div>
+                  </li>
+                ))}
               </ul>
             )}
-
           </div>
 
         </div>
-
       </div>
-
     </div>
   );
 }

@@ -13,13 +13,12 @@ import Cervejas from './pages/Cervejas';
 import Vendas from './pages/Vendas';
 import Relatorio from './pages/Relatorio';
 
+//o children será oque está entre os "<RotaProtegida>" nas chamadas da mesma
+//se tiver logado, vai pra pagina que será recebida pelo children,caso contrario login
+// o replace é necessario para voltar para a pagina anterior, ele meio q salva
 function RotaProtegida({ children }) {
-  const usuarioLogado =
-    localStorage.getItem('usuarioLogado');
-
-  return usuarioLogado
-    ? children
-    : <Navigate to="/login" replace />;
+  const usuarioLogado = localStorage.getItem('usuarioLogado');
+  return usuarioLogado ? children : <Navigate to="/login" replace />;
 }
 
 function App() {
@@ -27,13 +26,11 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* Redirecionamento inicial */}
+        {/* Redirecionamento inicial - verifica se a var usuariologado está true*/}
         <Route
           path="/"
-          element={
-            localStorage.getItem('usuarioLogado')
-              ? <Navigate to="/clientes" replace />
-              : <Navigate to="/login" replace />
+          element= {
+            localStorage.getItem('usuarioLogado') ? <Navigate to="/clientes" replace /> : <Navigate to="/login" replace />
           }
         />
 

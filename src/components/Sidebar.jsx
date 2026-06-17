@@ -8,6 +8,9 @@ function Sidebar() {
     navigate('/login');
   };
 
+  //O React Router muda a URL quando a URL muda//
+  // e procura a rota correspondente no App.jsx://
+
   return (
     <aside className="sidebar">
 
@@ -51,7 +54,7 @@ function Sidebar() {
         className="danger-btn sidebar-logout"
         onClick={logout}
       >
-        🚪 Sair
+          Sair
       </button>
 
     </aside>

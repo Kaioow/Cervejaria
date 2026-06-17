@@ -2,19 +2,24 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function Login() {
+  //ambos os valores vão ser setados nessa mesma pagina nos inputs
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  //obtem função que permite navegar entre paginas
   const navigate = useNavigate();
 
   const handleLogin = (e) => {
+    //manter o usuario logado
     e.preventDefault();
 
+    //testa se algum campo está nulo
     if (!email || !senha) {
       alert('Por favor, preencha todos os campos!');
       return;
     }
 
     localStorage.setItem('usuarioLogado', 'true');
+    //passa a pagina pro navigate
     navigate('/clientes');
   };
 
