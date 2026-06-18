@@ -5,14 +5,10 @@ import {
 } from '../services/relatorioService';
 
 export function useRelatorio() {
-  const [dadosRelatorio,
-    setDadosRelatorio] = useState([]);
+  const [dadosRelatorio, setDadosRelatorio] = useState([]);
 
   useEffect(() => {
-    setDadosRelatorio(
-      gerarRelatorio()
-    );
-  }, []);
+    setDadosRelatorio( gerarRelatorio()); }, []);
 
   const totalVendas =
     dadosRelatorio.length;

@@ -5,9 +5,7 @@ import {
 } from '../services/clienteService';
 
 export function useClientes() {
-  const [clientes, setClientes] = useState(
-    carregarClientes()
-  );
+  const [clientes, setClientes] = useState( carregarClientes());
 
   useEffect(() => {
     salvarClientes(clientes);

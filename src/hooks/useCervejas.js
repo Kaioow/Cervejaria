@@ -5,9 +5,7 @@ import {
 } from '../services/cervejaService';
 
 export function useCervejas() {
-  const [cervejas, setCervejas] = useState(
-    carregarCervejas()
-  );
+  const [cervejas, setCervejas] = useState(carregarCervejas() );
 
   useEffect(() => {
     salvarCervejas(cervejas);

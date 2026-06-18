@@ -37,8 +37,8 @@ function Login() {
 
           background: linear-gradient(
             135deg,
-            #1f2937,
-            #374151
+            #e98008,
+            #e8c216
           );
 
           display: flex;
@@ -155,7 +155,7 @@ function Login() {
       <div className="login-card">
 
         <h2 className="brand-logo">
-          🍺 BeerManager
+          🍺 NossaBreja
         </h2>
 
         <p className="brand-subtitle">
@@ -167,7 +167,6 @@ function Login() {
             <label className="form-label">
               E-mail
             </label>
-
             <input
               type="email"
               className="form-input"
@@ -200,7 +199,7 @@ function Login() {
         </form>
 
         <p className="footer-text">
-          BeerManager v1.0 • Projeto Acadêmico
+          NossaBreja v1.0 • Projeto Acadêmico
         </p>
 
       </div>

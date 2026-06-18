@@ -15,7 +15,7 @@ function Sidebar() {
     <aside className="sidebar">
 
       <div className="sidebar-logo">
-        🍺 BeerManager
+        🍺 NossaBreja
       </div>
 
       <nav className="sidebar-menu">

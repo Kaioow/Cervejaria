@@ -2,11 +2,7 @@ import Sidebar from '../components/Sidebar';
 import { useRelatorio } from '../hooks/useRelatorio';
 
 function Relatorio() {
-  const {
-    dadosRelatorio,
-    totalVendas,
-    faturamentoTotal,
-  } = useRelatorio();
+  const { dadosRelatorio,totalVendas,faturamentoTotal,} = useRelatorio();
 
   return (
     <div className="layout">
@@ -116,9 +112,7 @@ function Relatorio() {
 
                         <td>
                           R${' '}
-                          {item.valorTotal.toFixed(
-                            2
-                          )}
+                          {item.valorTotal.toFixed(2)}
                         </td>
                       </tr>
                     )

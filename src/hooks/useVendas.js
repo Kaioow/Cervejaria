@@ -107,6 +107,8 @@ export function useVendas() {
     limparFormulario();
   };
 
+
+  
   const editarVenda = (venda) => {
     setClienteId(venda.clienteId);
     setCervejaId(venda.cervejaId);
