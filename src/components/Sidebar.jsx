@@ -8,9 +8,6 @@ function Sidebar() {
     navigate('/login');
   };
 
-  //O React Router muda a URL quando a URL muda//
-  // e procura a rota correspondente no App.jsx://
-
   return (
     <aside className="sidebar">
 
@@ -22,30 +19,42 @@ function Sidebar() {
 
         <NavLink
           to="/clientes"
-          className="sidebar-link"
+          className={({ isActive }) =>
+            isActive ? "sidebar-link active" : "sidebar-link"
+          }
         >
-          👥 Clientes
+          <span className="icon">👥</span>
+          Clientes
         </NavLink>
 
         <NavLink
           to="/cervejas"
-          className="sidebar-link"
+          className={({ isActive }) =>
+            isActive ? "sidebar-link active" : "sidebar-link"
+          }
         >
-          🍻 Cervejas
+          <span className="icon">🍻</span>
+          Cervejas
         </NavLink>
 
         <NavLink
           to="/vendas"
-          className="sidebar-link"
+          className={({ isActive }) =>
+            isActive ? "sidebar-link active" : "sidebar-link"
+          }
         >
-          💰 Vendas
+          <span className="icon">💰</span>
+          Vendas
         </NavLink>
 
         <NavLink
           to="/relatorio"
-          className="sidebar-link"
+          className={({ isActive }) =>
+            isActive ? "sidebar-link active" : "sidebar-link"
+          }
         >
-          📊 Relatório
+          <span className="icon">📊</span>
+          Relatório
         </NavLink>
 
       </nav>
@@ -54,7 +63,7 @@ function Sidebar() {
         className="danger-btn sidebar-logout"
         onClick={logout}
       >
-          Sair
+        ⏻ Sair
       </button>
 
     </aside>

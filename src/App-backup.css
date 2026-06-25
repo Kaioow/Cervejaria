@@ -1,34 +1,17 @@
 /* ===========================
-   RESET GLOBAL
-=========================== */
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Inter', sans-serif;
-}
-
-body {
-  background: #0f172a;
-  color: #e5e7eb;
-}
-
-/* ===========================
    LAYOUT GERAL
 =========================== */
 
 .layout {
   display: flex;
   min-height: 100vh;
-  background: #0f172a;
+  background: #f4f6f9;
 }
 
 .content {
   flex: 1;
   padding: 30px;
   overflow-y: auto;
-  color: #e5e7eb;
 }
 
 /* ===========================
@@ -37,12 +20,12 @@ body {
 
 .sidebar {
   width: 260px;
-  background: #111827;
+  background: #1f2937;
   color: white;
   padding: 20px;
   display: flex;
   flex-direction: column;
-  box-shadow: 5px 0 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-logo {
@@ -95,15 +78,6 @@ body {
   margin-bottom: 25px;
 }
 
-.page-header h2 {
-  font-size: 26px;
-}
-
-.page-header p {
-  color: #9ca3af;
-  margin-top: 5px;
-}
-
 .page-actions {
   display: flex;
   gap: 10px;
@@ -121,28 +95,21 @@ body {
 }
 
 .dashboard-card {
-  background: #1f2937;
+  background: white;
   padding: 25px;
-  border-radius: 14px;
+  border-radius: 12px;
   text-align: center;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-  transition: 0.25s ease;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.dashboard-card:hover {
-  transform: translateY(-5px);
-  border-color: #d97706;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .dashboard-card h3 {
-  color: #f59e0b;
+  color: #d97706;
   font-size: 32px;
   margin-bottom: 8px;
 }
 
 .dashboard-card p {
-  color: #9ca3af;
+  color: #666;
 }
 
 /* ===========================
@@ -150,17 +117,15 @@ body {
 =========================== */
 
 .form-card {
-  background: #1f2937;
+  background: white;
   padding: 25px;
-  border-radius: 14px;
+  border-radius: 12px;
   margin-bottom: 25px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .form-card h3 {
   margin-bottom: 15px;
-  color: #e5e7eb;
 }
 
 .form-grid {
@@ -171,18 +136,6 @@ body {
 .form-grid input,
 .form-grid select {
   width: 100%;
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #374151;
-  background: #0f172a;
-  color: #fff;
-  outline: none;
-  transition: 0.2s;
-}
-
-.form-grid input:focus,
-.form-grid select:focus {
-  border-color: #d97706;
 }
 
 /* ===========================
@@ -196,9 +149,9 @@ body {
   border: none;
   color: white;
   padding: 10px 16px;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: 0.2s;
   font-weight: 500;
 }
 
@@ -222,8 +175,7 @@ body {
 .secondary-btn:hover,
 .success-btn:hover,
 .danger-btn:hover {
-  transform: scale(1.03);
-  opacity: 0.95;
+  opacity: 0.9;
 }
 
 /* ===========================
@@ -231,11 +183,11 @@ body {
 =========================== */
 
 .list-card {
-  background: #1f2937;
+  background: white;
   border-radius: 12px;
   padding: 15px;
   margin-bottom: 12px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 
   display: flex;
   justify-content: space-between;
@@ -252,10 +204,10 @@ body {
 =========================== */
 
 .table-container {
-  background: #1f2937;
+  background: white;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 table {
@@ -266,9 +218,6 @@ table {
 thead {
   background: #d97706;
   color: white;
-  text-transform: uppercase;
-  font-size: 12px;
-  letter-spacing: 1px;
 }
 
 th {
@@ -278,15 +227,14 @@ th {
 
 td {
   padding: 14px;
-  border-bottom: 1px solid #374151;
 }
 
 tbody tr:nth-child(even) {
-  background: rgba(255, 255, 255, 0.02);
+  background: #f8fafc;
 }
 
 tbody tr:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: #f1f5f9;
 }
 
 /* ===========================
@@ -294,6 +242,7 @@ tbody tr:hover {
 =========================== */
 
 @media (max-width: 768px) {
+
   .layout {
     flex-direction: column;
   }
@@ -311,63 +260,4 @@ tbody tr:hover {
   .actions {
     flex-direction: column;
   }
-  
-/* CARD CLIENTE MODERNO */
-.client-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 18px;
-  transition: 0.2s ease;
-}
-
-.client-card:hover {
-  transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.02);
-}
-
-/* INFO DO CLIENTE */
-.client-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-/* AVATAR */
-.client-avatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: #d97706;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  color: white;
-}
-
-/* DETALHES */
-.client-details {
-  display: flex;
-  flex-direction: column;
-}
-
-.client-name {
-  font-size: 16px;
-}
-
-.client-email {
-  color: #9ca3af;
-}
-
-.client-phone {
-  color: #6b7280;
-  font-size: 12px;
-}
-
-/* BOTÕES MAIS ORGANIZADOS */
-.actions {
-  display: flex;
-  gap: 8px;
-}
 }
