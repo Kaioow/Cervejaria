@@ -163,28 +163,26 @@ function Login() {
         </p>
 
         <form onSubmit={handleLogin}>
+
           <div className="form-group">
             <label className="form-label">
               E-mail
             </label>
-            <input
-              type="email"
-              className="form-input"
-              value={email}
+            
+            <input type="email" className="form-input" value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="usuario@email.com"
             />
           </div>
+
 
           <div className="form-group">
             <label className="form-label">
               Senha
             </label>
 
-            <input
-              type="password"
-              className="form-input"
-              value={senha}
+
+            <input type="password" className="form-input"  value={senha}
               onChange={(e) => setSenha(e.target.value)}
               placeholder="••••••••"
             />

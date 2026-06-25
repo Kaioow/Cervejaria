@@ -14,8 +14,7 @@ function Clientes() {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [telefone, setTelefone] = useState('');
-  const [editandoId, setEditandoId] =
-    useState(null);
+  const [editandoId, setEditandoId] = useState(null);
 
   const limparFormulario = () => {
     setNome('');
@@ -34,17 +33,9 @@ function Clientes() {
 
     if (editandoId) {
       atualizar(
-        editandoId,
-        nome,
-        email,
-        telefone
-      );
+        editandoId,  nome,  email,  telefone );
     } else {
-      adicionar(
-        nome,
-        email,
-        telefone
-      );
+      adicionar(nome, email, telefone );
     }
 
     limparFormulario();
@@ -95,9 +86,7 @@ function Clientes() {
           <div className="form-card">
 
             <h3>
-              {editandoId
-                ? 'Editar Cliente'
-                : 'Novo Cliente'}
+              {editandoId ? 'Editar Cliente' : 'Novo Cliente'}
             </h3>
 
             <form

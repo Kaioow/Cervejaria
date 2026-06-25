@@ -8,9 +8,7 @@ import {
 } from '../services/vendaService';
 
 export function useVendas() {
-  const [vendas, setVendas] = useState(
-    carregarVendas()
-  );
+  const [vendas, setVendas] = useState(carregarVendas());
 
   const [clientes, setClientes] = useState([]);
   const [cervejas, setCervejas] = useState([]);
@@ -22,9 +20,6 @@ export function useVendas() {
     useState('');
 
   const [quantidade, setQuantidade] =
-    useState('');
-
-  const [valorTotal, setValorTotal] =
     useState('');
 
   const [editandoId, setEditandoId] =
@@ -48,7 +43,6 @@ export function useVendas() {
     setClienteId('');
     setCervejaId('');
     setQuantidade('');
-    setValorTotal('');
     setEditandoId(null);
   };
 
@@ -58,14 +52,18 @@ export function useVendas() {
     if (
       !clienteId ||
       !cervejaId ||
-      !quantidade ||
-      !valorTotal
+      !quantidade 
     ) {
       alert(
         'Preencha todos os campos.'
       );
       return;
     }
+
+    //prucura e calcula o valor total do pedido com base nas cervejas
+    const cervejaSelecionada = cervejas.find((c) => c.id === Number(cervejaId));
+    const valorCalculado = Number(cervejaSelecionada.valor) * Number(quantidade);
+
 
     if (editandoId) {
       setVendas(
@@ -80,7 +78,7 @@ export function useVendas() {
                 quantidade:
                   Number(quantidade),
                 valorTotal:
-                  Number(valorTotal),
+                 valorCalculado,
               }
             : venda
         )
@@ -95,7 +93,7 @@ export function useVendas() {
         quantidade:
           Number(quantidade),
         valorTotal:
-          Number(valorTotal),
+          valorCalculado,
       };
 
       setVendas([
@@ -154,8 +152,6 @@ export function useVendas() {
     quantidade,
     setQuantidade,
 
-    valorTotal,
-    setValorTotal,
 
     editandoId,
 

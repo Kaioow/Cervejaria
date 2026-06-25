@@ -27,7 +27,9 @@ function Relatorio() {
           </div>
 
           <div className="dashboard-cards">
+            
 
+          
             <div className="dashboard-card">
               <h3>
                 {totalVendas}

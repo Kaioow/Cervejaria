@@ -11,23 +11,27 @@ export function useCervejas() {
     salvarCervejas(cervejas);
   }, [cervejas]);
 
-  const adicionar = (nome, estilo) => {
+
+
+  const adicionar = (nome, estilo,valor) => {
     const novaCerveja = {
       id: Date.now(),
       nome,
       estilo,
+      valor,
     };
-
     setCervejas([
       ...cervejas,
       novaCerveja,
     ]);
   };
 
+
   const atualizar = (
     id,
     nome,
-    estilo
+    estilo,
+    valor,
   ) => {
     const atualizadas = cervejas.map(
       (cerveja) =>
@@ -36,20 +40,19 @@ export function useCervejas() {
               ...cerveja,
               nome,
               estilo,
+              valor,
             }
           : cerveja
     );
-
     setCervejas(atualizadas);
   };
 
-  const remover = (id) => {
-    const filtradas = cervejas.filter(
-      (cerveja) => cerveja.id !== id
-    );
 
+  const remover = (id) => {
+    const filtradas = cervejas.filter( (cerveja) => cerveja.id !== id);
     setCervejas(filtradas);
   };
+
 
   return {
     cervejas,

@@ -3,43 +3,41 @@ import Sidebar from '../components/Sidebar';
 import { useCervejas } from '../hooks/useCervejas';
 
 function Cervejas() {
-  const {
-    cervejas,
-    adicionar,
-    atualizar,
-    remover,
-  } = useCervejas();
+  const { cervejas,adicionar,atualizar,remover,} = useCervejas();
 
   const [nome, setNome] = useState('');
   const [estilo, setEstilo] = useState('');
+  const [valor, setValor] = useState('');
   const [editandoId, setEditandoId] = useState(null);
 
   const limparFormulario = () => {
     setNome('');
     setEstilo('');
+    setValor('')
     setEditandoId(null);
   };
 
   const salvarCerveja = (e) => {
     e.preventDefault();
 
-    if (!nome.trim() || !estilo.trim()) {
+    if (!nome.trim() || !estilo.trim() || !valor) {
       alert('Informe o nome e o estilo da cerveja.');
       return;
     }
 
     if (editandoId) {
-      atualizar(editandoId, nome, estilo);
+      atualizar(editandoId, nome, estilo,valor);
     } else {
-      adicionar(nome, estilo);
+      adicionar(nome, estilo,valor);
     }
 
     limparFormulario();
   };
-
+    
   const editarCerveja = (cerveja) => {
     setNome(cerveja.nome);
     setEstilo(cerveja.estilo);
+    setValor(cerveja.valor);
     setEditandoId(cerveja.id);
   };
 
@@ -72,50 +70,39 @@ function Cervejas() {
 
           <div className="form-card">
             <h3>
-              {editandoId
-                ? 'Editar Cerveja'
-                : 'Nova Cerveja'}
+              {editandoId ? 'Editar Cerveja': 'Nova Cerveja'}
             </h3>
+
 
             <form
               className="form-grid"
               onSubmit={salvarCerveja}
             >
-              <input
-                type="text"
-                placeholder="Nome da cerveja"
-                value={nome}
-                onChange={(e) =>
-                  setNome(e.target.value)
-                }
+              <input type="text"  placeholder="Nome da cerveja"
+                value={nome} onChange={(e) => setNome(e.target.value)}
               />
 
-              <input
-                type="text"
-                placeholder="Estilo (IPA, Pilsen, Stout...)"
-                value={estilo}
-                onChange={(e) =>
-                  setEstilo(e.target.value)
-                }
+              <input type="text" placeholder="Estilo (IPA, Pilsen, Stout...)"
+                value={estilo} onChange={(e) =>  setEstilo(e.target.value)}
               />
 
-              <button
-                type="submit"
-                className="success-btn"
-              >
-                {editandoId
-                  ? 'Atualizar Cerveja'
-                  : 'Cadastrar Cerveja'}
+              <input type="number"  step="0.01" placeholder="Valor"
+                value={valor} onChange={(e) => setValor(e.target.value)}/>
+
+
+              <button  type="submit"   className="success-btn">
+                {editandoId ? 'Atualizar Cerveja' : 'Cadastrar Cerveja'}
               </button>
+
             </form>
           </div>
+
+
 
           <div className="form-card">
             <h3>Lista de Cervejas</h3>
 
-            {cervejas.length === 0 ? (
-              <p>Nenhuma cerveja cadastrada.</p>
-            ) : (
+            {cervejas.length === 0 ? ( <p>Nenhuma cerveja cadastrada.</p> ) : (
               <ul
                 style={{
                   listStyle: 'none',
@@ -136,6 +123,8 @@ function Cervejas() {
 
                       <small>
                         Estilo: {cerveja.estilo}
+                          <br />
+                        Valor: R${cerveja.valor}
                       </small>
                     </div>
 
@@ -148,14 +137,8 @@ function Cervejas() {
                       >
                           Editar
                       </button>
-
-                      <button
-                        className="danger-btn"
-                        onClick={() =>
-                          excluirCerveja(
-                            cerveja.id
-                          )
-                        }
+                          
+                      <button className="danger-btn" onClick={() =>  excluirCerveja(cerveja.id) }
                       >
                           Excluir
                       </button>

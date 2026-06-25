@@ -12,8 +12,6 @@ function Vendas() {
     setCervejaId,
     quantidade,
     setQuantidade,
-    valorTotal,
-    setValorTotal,
     editandoId,
     salvarVenda,
     editarVenda,
@@ -75,14 +73,7 @@ function Vendas() {
                 onChange={(e) => setQuantidade(e.target.value)}
               />
 
-              <input
-                type="number"
-                step="0.01"
-                placeholder="Valor Total"
-                value={valorTotal}
-                onChange={(e) => setValorTotal(e.target.value)}
-              />
-
+         
               <button type="submit" className="success-btn">
                 {editandoId ? 'Atualizar Venda' : 'Registrar Venda'}
               </button>
